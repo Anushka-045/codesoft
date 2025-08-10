@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Basic Calculator</title>
+<style>
+  body {
+    background: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+  }
+
+  .calculator {
+    background: #2196f3;
+    padding: 20px;
+    border-radius: 12px;
+    width: 260px;
+    box-shadow: 0 0 15px #2196f3aa;
+  }
+
+  .display {
+    background: #bbdefb;
+    color: #111;
+    font-size: 2rem;
+    height: 50px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 5px 10px;
+    text-align: right;
+    overflow-x: auto;
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+
+  button {
+    font-size: 1.5rem;
+    border: none;
+    border-radius: 8px;
+    background: #1976d2;
+    color: white;
+    cursor: pointer;
+    padding: 15px 0;
+    user-select: none;
+    transition: background 0.3s;
+  }
+
+  button.operator {
+    background: #1565c0;
+  }
+
+  button.equals {
+    grid-column: span 2;
+    background: #0d47a1;
+  }
+
+  button:hover {
+    background: #0d47a1;
+  }
+</style>
+</head>
+<body>
+
+<div class="calculator">
+  <div class="display" id="display">0</div>
+  <div class="buttons">
+    <button class="num">7</button>
+    <button class="num">8</button>
+    <button class="num">9</button>
+    <button class="operator">+</button>
+    <button class="num">4</button>
+    <button class="num">5</button>
+    <button class="num">6</button>
+    <button class="operator">-</button>
+    <button class="num">1</button>
+    <button class="num">2</button>
+    <button class="num">3</button>
+    <button class="operator">*</button>
+    <button class="num">0</button>
+    <button class="clear">C</button>
+    <button class="equals">=</button>
+    <button class="operator">/</button>
+  </div>
+</div>
+
+<script>
+  const display = document.getElementById('display');
+  let currentInput = '';
+  let resultDisplayed = false;
+
+  document.querySelectorAll('button').forEach(button => {
+    button.addEventListener('click', () => {
+      const btnValue = button.textContent;
+
+      if (button.classList.contains('num')) {
+        if (resultDisplayed) {
+          currentInput = btnValue;
+          resultDisplayed = false;
+        } else {
+          currentInput += btnValue;
+        }
+        display.textContent = currentInput;
+      } else if (button.classList.contains('operator')) {
+        if (currentInput === '') return;
+        // Prevent multiple operators in a row
+        if ('+-*/'.includes(currentInput.slice(-1))) {
+          currentInput = currentInput.slice(0, -1) + btnValue;
+        } else {
+          currentInput += btnValue;
+        }
+        display.textContent = currentInput;
+        resultDisplayed = false;
+      } else if (button.classList.contains('equals')) {
+        if (currentInput === '') return;
+        try {
+          let evalResult = eval(currentInput);
+          display.textContent = evalResult;
+          currentInput = evalResult.toString();
+          resultDisplayed = true;
+        } catch {
+          display.textContent = 'Error';
+          currentInput = '';
+        }
+      } else if (button.classList.contains('clear')) {
+        currentInput = '';
+        display.textContent = '0';
+        resultDisplayed = false;
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
